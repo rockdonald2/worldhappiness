@@ -1,0 +1,35 @@
+{
+  "name": "worldhappiness",
+  "version": "1.0.0",
+  "description": "A visualization about the World Happiness Report.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rockdonald2/worldhappiness.git"
+  },
+  "keywords": [
+    "Viz",
+    "d3",
+    "js",
+    "html",
+    "python",
+    "jupyter",
+    "world",
+    "happiness",
+    "report"
+  ],
+  "author": "Lukács Zsolt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rockdonald2/worldhappiness/issues"
+  },
+  "homepage": "https://github.com/rockdonald2/worldhappiness#readme",
+  "devDependencies": {
+    "live-server": "^1.2.1",
+    "node-sass": "^4.14.1",
+    "npm-run-all": "^4.1.5"
+  }
+}
