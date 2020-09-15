@@ -4,7 +4,9 @@
   "description": "A visualization about the World Happiness Report.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch:sass": "node-sass static/scss/main.scss static/css/style.css -w",
+    "server": "live-server",
+    "start": "npm-run-all --parallel watch:sass server"
   },
   "repository": {
     "type": "git",

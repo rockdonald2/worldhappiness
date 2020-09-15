@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,300&display=swap');
+
+*,
+*::before,
+*::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: inherit;
+    color: inherit;
+}
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+::-moz-selection {
+    background-color: rgba($emp-color, .5);
+}
+
+::selection {
+    background-color: rgba($emp-color, .5);
+}
+
+html {
+    font-size: 62.5%; // 1rem
+
+    @include responsive(1250px) {
+        font-size: 50%;
+    }
+
+    @include responsive(1000px) {
+        font-size: 42.5%;
+    }
+}
+
+body {
+    box-sizing: border-box;
+    font-family: 'Open Sans',
+        sans-serif;
+    background-color: $bg-color;
+    width: 120rem;
+    margin: 0 auto;
+    color: $text-color;
+
+    @include responsive(1000px) {
+        width: 97.5%;
+    }
+}
+
+.emphasize {
+    color: $emp-color;
+    font-style: italic;
+}
