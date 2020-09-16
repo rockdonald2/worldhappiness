@@ -1,3 +1,49 @@
-.radial-graph {
-    height: 100rem;
+.graph-title {
+    width: 80%;
+    margin: 0 auto;
+    color: $emp-color;
+
+    &--title {
+        font-size: 2.4rem;
+        font-weight: 300;
+    }
+}
+
+#densityTitle {
+    margin-top: 5rem;
+}
+
+#spiderTitle {
+    margin-top: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.density-graphs {
+    height: 55rem;
+}
+
+.spider-graph {
+    height: 55rem;
+}
+
+.tooltip {
+    background-color: $emp-color;
+    color: $bg-color;
+    text-align: center;
+    border-radius: 6px;
+    padding: .5rem 1rem;
+    position: absolute;
+    left: -9999px;
+    font-size: 1.4rem;
+
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -7px;
+        border-width: 7px;
+        border-style: solid;
+        border-color: transparent transparent $emp-color transparent;
+    }
 }

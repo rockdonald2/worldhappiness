@@ -17,13 +17,14 @@
     ];
     viz.years = d3.range(2015, 2020);
     viz.colors = {
-        'text': 'rgba(76, 76, 76, 1)'
+        'text': 'rgba(18, 18, 18, 1)',
+        'emp': ' rgb(81, 152, 114)',
     };
 
     viz.densityAcc = 100;
 
     /* length of the transitions in ms */
-    viz.TRANS_DURATION = 750;
+    viz.TRANS_DURATION = 300;
 
     viz.multivalue_filter = function (values) {
         return function (v) {
@@ -40,6 +41,7 @@
     }
 
     viz.init = function () {
-        viz.initRadial();
+        viz.initYears();
+        viz.initSpider();
     };
 }(window.viz = window.viz || {}))

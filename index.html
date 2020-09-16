@@ -31,21 +31,29 @@
                     rate their own current lives on that scale. The columns following the happiness score estimate the extent to
                     which each of six factors - <span class="emphasize">economic production, social support, life expectancy,
                         freedom, absence of
-                        corruption and generosity</span> - contribute to making life evaluations higher in each countrys than they
+                        corruption and generosity</span> - contribute to making life evaluations higher in each countries than they
                     are in
                     Dystopia, a hypothetical country that has values equal to the world's lowest national averages for each of the
                     six factors. They have no impact on the total score reported for each country, but they do explain why some
                     countries rank higher than others.</p>
                 <p><span class="emphasize">Dystopia is an imaginary country that has the world's least-happy people</span>. The
                     purpose in establishing Dystopia
-                    is to have a benchmark against which all countries can be favorably compared (no country perfoms mroe poorly
+                    is to have a benchmark against which all countries can be favorably compared (no country perfoms more poorly
                     than Dystopia) in terms of each of the six key variables, thus allowing each sub-bar to be of positive width.
                     The lowest scores observed for the six key variables, therefore, characterize Dystopia.</p>
             </div>
         </section>
         <main class="container">
-            <div class="radial-graph"></div>
+            <div class="graph-title">
+                <h2 class="graph-title--title" id="densityTitle">How the score looks globally through the years?</h2>
+            </div>
             <div class="density-graphs"></div>
+            <div class="graph-title">
+                <h2 class="graph-title--title" id="spiderTitle">But, what factors make us happier?</h2>
+            </div>
+            <div class="spider-graph">
+                <div class="tooltip"></div>
+            </div>
             <div class="individual-graphs"></div>
         </main>
         <section class="lower"></section>
@@ -61,7 +69,9 @@
 
         <script src="static/js/viz_core.js"
             defer></script>
-        <script src="static/js/viz_radial.js"
+        <script src="static/js/viz_years.js"
+            defer></script>
+        <script src="static/js/viz_reasons.js"
             defer></script>
         <script src="static/js/viz_main.js"
             defer></script>

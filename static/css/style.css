@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap");
 *,
 *::before,
 *::after {
@@ -28,11 +28,11 @@ html {
 
 body {
   box-sizing: border-box;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   background-color: #ece9e2;
   width: 120rem;
   margin: 0 auto;
-  color: #4c4c4c; }
+  color: #121212; }
   @media only screen and (max-width: 1000px) {
     body {
       width: 97.5%; } }
@@ -63,14 +63,51 @@ body {
   margin: 0 auto;
   font-size: 1.6rem;
   line-height: 1.6;
-  color: rgba(76, 76, 76, 0.85);
+  color: rgba(18, 18, 18, 0.85);
   font-weight: 300;
-  text-align: center; }
+  text-align: justify; }
   .text p {
     margin-top: 1.5rem; }
 
-.radial-graph {
-  height: 100rem; }
+.graph-title {
+  width: 80%;
+  margin: 0 auto;
+  color: #519872; }
+  .graph-title--title {
+    font-size: 2.4rem;
+    font-weight: 300; }
+
+#densityTitle {
+  margin-top: 5rem; }
+
+#spiderTitle {
+  margin-top: 1rem;
+  margin-bottom: 2.5rem; }
+
+.density-graphs {
+  height: 55rem; }
+
+.spider-graph {
+  height: 55rem; }
+
+.tooltip {
+  background-color: #519872;
+  color: #ece9e2;
+  text-align: center;
+  border-radius: 6px;
+  padding: .5rem 1rem;
+  position: absolute;
+  left: -9999px;
+  font-size: 1.4rem; }
+  .tooltip::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -7px;
+    border-width: 7px;
+    border-style: solid;
+    border-color: transparent transparent #519872 transparent; }
 
 .lower {
   margin-bottom: 5rem; }
