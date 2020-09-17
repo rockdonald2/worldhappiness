@@ -17,9 +17,9 @@
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round");
 
-    //Filter for the outside glow
-    let filter = svg.append('defs').append('filter').attr('id', 'glow'),
-        feGaussianBlur = filter.append('feGaussianBlur').attr('stdDeviation', '1').attr('result', 'coloredBlur'),
+    //Filter for the outside glow1
+    let filter = svg.append('defs').append('filter').attr('id', 'glow1'),
+        feGaussianBlur = filter.append('feGaussianBlur').attr('stdDeviation', '1.25').attr('result', 'coloredBlur'),
         feMerge = filter.append('feMerge'),
         feMergeNode_1 = feMerge.append('feMergeNode').attr('in', 'coloredBlur'),
         feMergeNode_2 = feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
@@ -102,12 +102,12 @@
             const explanation = svg.append('g')
                 .attr('transform', `translate(${width + margin.left + 50}, ${height + margin.top})`)
                 .call((g) => {
-                    g.append('marker').attr('id', 'marker').attr('markerHeight', 10).attr('markerWidth', 10).attr('refX', 6).attr('refY', 3).attr('orient', 'auto')
+                    g.append('marker').attr('id', 'marker1').attr('markerHeight', 10).attr('markerWidth', 10).attr('refX', 6).attr('refY', 3).attr('orient', 'auto')
                         .append('path').attr('d', 'M0,0L9,3L0,6Z')
                         .attr('fill', viz.colors['text'])
                         .attr('opacity', .75)
                         .style('pointer-events', 'none');
-                    g.append('line').attr('marker-end', 'url(#marker)').attr('x1', -4).attr('x2', -4)
+                    g.append('line').attr('marker-end', 'url(#marker1)').attr('x1', -4).attr('x2', -4)
                         .attr('y1', -90).attr('y2', -125).attr('stroke', viz.colors['text']).attr('stroke-width', strokeWidth)
                         .attr('opacity', .75)
                         .style('pointer-events', 'none');
@@ -130,30 +130,29 @@
             const weightAnnot = 300;
 
             const annotMargin = {
-                'left': 10,
                 'top': 32,
                 'height': 22.5
             };
 
             const g = svg.append('g').attr('class', 'textWrapper')
-                .attr('transform', `translate(${margin.left}, 0)`);
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
             const circle = g.append('circle')
                 .attr('stroke', viz.colors['text']).attr('stroke-width', strokeWidth)
                 .attr('r', 4).attr('cx', scaleScore(5))
-                .attr('cy', scaleDensity(scaleDensity.domain()[0] + 0.2) + margin.top)
+                .attr('cy', scaleDensity(scaleDensity.domain()[0] + 0.2))
                 .attr('fill', 'none');
             const lineToText1 = g.append('line')
                 .attr('stroke', viz.colors['text']).attr('stroke-width', strokeWidth)
                 .attr('stroke-dasharray', strokeDashArray).attr('fill', 'none')
                 .attr('x1', scaleScore(5)).attr('x2', scaleScore(6))
-                .attr('y1', scaleDensity(scaleDensity.domain()[0] + 0.2) + margin.top)
-                .attr('y2', 50);
+                .attr('y1', scaleDensity(scaleDensity.domain()[0] + 0.2))
+                .attr('y2', -100);
             const lineToText2 = g.append('line')
                 .attr('stroke', viz.colors['text']).attr('stroke-width', strokeWidth)
                 .attr('stroke-dasharray', strokeDashArray).attr('fill', 'none')
                 .attr('x1', scaleScore(6)).attr('x2', width + margin.right - margin.right / 8)
-                .attr('y1', 50).attr('y2', 50);
+                .attr('y1', -100).attr('y2', -100);
 
             const annotTitle = g.append('text')
                 .text('Changes through the years')
@@ -161,18 +160,18 @@
                 .style('font-size', fontTitle)
                 .style('font-weight', weightTitle)
                 .attr('text-anchor', 'end')
-                .attr('transform', `translate(${width + margin.right - margin.right / 8}, 75)`)
+                .attr('transform', `translate(${width + margin.right - margin.right / 8}, -75)`)
 
             const annotText = ['The density charts on the right visualizes for us,', 'that generally people feel more happy collectively.', 'Through the last 5 years, more countries', 'improved their Happiness Score, so there are', 'less people living in countries with lower scores.', 'The density moved from a score around 4-4.5 to over 5.5.'];
             const annot = g.append('text')
                 .attr('text-anchor', 'end')
-                .attr('transform', `translate(${width + margin.right - margin.right / 7}, 75)`)
+                .attr('transform', `translate(${width + margin.right - margin.right / 8}, -75)`)
                 .selectAll('tspan')
                 .data(annotText).enter().append('tspan')
                 .text((d) => d)
                 .style('font-size', fontAnnot)
                 .style('font-weight', weightAnnot)
-                .attr('x', annotMargin.left)
+                .attr('x', 0)
                 .attr('y', (d, i) => annotMargin.top + i * annotMargin.height);
         }();
 
@@ -180,14 +179,14 @@
             const fontWeight = 300;
             const fontSize = '1.1rem';
 
-            const legend = svg.append('g').attr('class', 'legend')
+            const legend = svg.append('g').attr('class', 'legendWrapper')
                 .attr('transform', `translate(${margin.left + width + margin.right - margin.right / 8}, ${margin.top + height})`)
                 .attr('text-anchor', 'end')
                 .call((g) => {
                     g.append('text').text('* Inner values represent median Happiness Scores')
                         .style('font-weight', fontWeight).style('font-size', fontSize)
                         .attr('fill', viz.colors['text'])
-                        .attr('opacity', .5);
+                        .attr('fill-opacity', .5);
                 });
         }();
 
@@ -211,7 +210,7 @@
                 .attr('stroke', viz.colors['text'])
                 .attr('stroke-opacity', .5)
                 .attr('d', (d) => line(d.density))
-                .style('filter', 'url(#glow)');
+                .style('filter', 'url(#glow1)');
             chart.append('text').text((d) => d3.format('.2f')(d['median']))
                 .style('font-weight', 300).style('font-size', '3.2rem')
                 .attr('text-anchor', 'middle')
@@ -219,7 +218,8 @@
                 .attr('y', scaleDensity(scaleDensity.domain()[0] + 0.1))
                 .attr('fill', viz.colors['text'])
                 .attr('opacity', .25)
-                .style('pointer-events', 'none');
+                .style('pointer-events', 'none')
+                .style('filter', 'url(#glow1)');
         }();
     };
 }(window.viz = window.viz || {}));

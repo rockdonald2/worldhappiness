@@ -18,9 +18,9 @@
         .attr("stroke-linejoin", "round")
         .attr("stroke-linecap", "round");
 
-    //Filter for the outside glow
-    let filter = svg.append('defs').append('filter').attr('id', 'glow'),
-        feGaussianBlur = filter.append('feGaussianBlur').attr('stdDeviation', '2').attr('result', 'coloredBlur'),
+    //Filter for the outside glow3
+    let filter = svg.append('defs').append('filter').attr('id', 'glow3'),
+        feGaussianBlur = filter.append('feGaussianBlur').attr('stdDeviation', '1.75').attr('result', 'coloredBlur'),
         feMerge = filter.append('feMerge'),
         feMergeNode_1 = feMerge.append('feMergeNode').attr('in', 'coloredBlur'),
         feMergeNode_2 = feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
@@ -51,62 +51,66 @@
             });
         }
 
-        console.log(corrs);
-
         const makeAxis = function () {
-            const axisGrid = chartHolder.append('g').attr('class', 'axisWrapper');
+            const fontSize = '1.4rem';
 
-            axisGrid.selectAll('.levels')
-                .data(d3.range(1, levels + 1).reverse())
-                .enter().append('circle')
-                .attr('class', 'gridCircle')
-                .attr('r', (d, i) => radius / levels * d)
-                .attr('fill', 'none')
-                .attr('stroke', viz.colors['text'])
-                .attr('stroke-opacity', .25)
-                .style('pointer-events', 'none');
+            const axisGrid = chartHolder.append('g').attr('class', 'axisWrapper')
+                .call((g) => {
+                    g.selectAll('.levels')
+                        .data(d3.range(1, levels + 1).reverse())
+                        .enter().append('circle')
+                        .attr('class', 'gridCircle')
+                        .attr('r', (d, i) => radius / levels * d)
+                        .attr('fill', 'none')
+                        .attr('stroke', viz.colors['text'])
+                        .attr('stroke-opacity', .25)
+                        .style('pointer-events', 'none')
+                        .style('filter', 'url(#glow3)');
 
-            axisGrid.selectAll('.axisLabel')
-                .data(d3.range(1, levels + 1).reverse())
-                .enter().append('text')
-                .attr('class', 'axisLabel')
-                .attr('x', 0)
-                .attr('y', (d) => -d * radius / levels)
-                .attr('dy', '-.2em')
-                .style('font-size', '1.4rem')
-                .attr('fill', viz.colors['text'])
-                .attr('opacity', .75)
-                .attr('text-anchor', 'middle')
-                .text((d, i) => d / 5)
-                .style('pointer-events', 'none');
+                    g.selectAll('.axisLabel')
+                        .data(d3.range(1, levels + 1).reverse())
+                        .enter().append('text')
+                        .attr('class', 'axisLabel')
+                        .attr('x', 0)
+                        .attr('y', (d) => -d * radius / levels)
+                        .attr('dy', '-.2em')
+                        .style('font-size', fontSize)
+                        .attr('fill', viz.colors['text'])
+                        .attr('opacity', .75)
+                        .attr('text-anchor', 'middle')
+                        .text((d, i) => d / 5)
+                        .style('pointer-events', 'none');
+                });
 
             const axis = axisGrid.selectAll('.axis')
                 .data(cols).enter().append('g')
-                .attr('class', 'axis');
+                .attr('class', 'axis')
+                .call((g) => {
+                    g.append('line')
+                        .attr('x1', 0).attr('x2', (d, i) => scaleRadius(1 * 1.1) * Math.cos(angleSlice * i - (Math.PI / 2)))
+                        .attr('y1', 0).attr('y2', (d, i) => scaleRadius(1 * 1.1) * Math.sin(angleSlice * i - (Math.PI / 2)))
+                        .attr('class', 'line')
+                        .attr('stroke', viz.colors['text'])
+                        .attr('stroke-width', '1px')
+                        .attr('stroke-opacity', .25)
+                        .style('pointer-events', 'none')
+                        .style('filter', 'url(#glow3)');
 
-            axis.append('line')
-                .attr('x1', 0).attr('x2', (d, i) => scaleRadius(1 * 1.1) * Math.cos(angleSlice * i - (Math.PI / 2)))
-                .attr('y1', 0).attr('y2', (d, i) => scaleRadius(1 * 1.1) * Math.sin(angleSlice * i - (Math.PI / 2)))
-                .attr('class', 'line')
-                .attr('stroke', viz.colors['text'])
-                .attr('stroke-width', '1px')
-                .attr('stroke-opacity', .25)
-                .style('pointer-events', 'none');
-
-            axis.append('text')
-                .attr('class', 'legend')
-                .attr('font-size', '1.2rem')
-                .attr('text-anchor', 'middle')
-                .attr('fill', viz.colors['text'])
-                .attr('opacity', .75)
-                .attr('dy', '.35em')
-                .attr('x', (d, i) => scaleRadius(1 * 1.25) * Math.cos(angleSlice * i - (Math.PI / 2)))
-                .attr('y', (d, i) => scaleRadius(1 * 1.25) * Math.sin(angleSlice * i - (Math.PI / 2)))
-                .text((d) => d)
-                .style('pointer-events', 'none');
+                    g.append('text')
+                        .attr('class', 'legend')
+                        .attr('font-size', fontSize)
+                        .attr('text-anchor', 'middle')
+                        .attr('fill', viz.colors['text'])
+                        .attr('opacity', .75)
+                        .attr('dy', '.35em')
+                        .attr('x', (d, i) => scaleRadius(1 * 1.25) * Math.cos(angleSlice * i - (Math.PI / 2)))
+                        .attr('y', (d, i) => scaleRadius(1 * 1.25) * Math.sin(angleSlice * i - (Math.PI / 2)))
+                        .text((d) => d)
+                        .style('pointer-events', 'none');
+                });
         }();
 
-        const makeRadar = function () {
+        const makeChart = function () {
             const blobWrapper = chartHolder.selectAll('.radarWrapper')
                 .data([corrs]).enter().append('g').attr('class', 'radarWrapper');
 
@@ -114,8 +118,6 @@
                 .attr('d', radarLine)
                 .attr('fill', viz.colors['emp'])
                 .attr('fill-opacity', .5)
-                .attr('stroke-width', '3px')
-                .attr('stroke', viz.colors['emp'])
                 .on('mouseenter', function (d) {
                     d3.select(this).transition().duration(viz.TRANS_DURATION).attr('fill-opacity', .75);
                 })
@@ -128,7 +130,7 @@
                 .attr('fill', 'none')
                 .attr('stroke-width', '3px')
                 .attr('stroke', viz.colors['emp'])
-                .style('filter', 'url(#glow)');
+                .style('filter', 'url(#glow3)');
 
             blobWrapper.selectAll('.radarCircle')
                 .data((d) => d).enter().append('circle')
@@ -138,7 +140,7 @@
                 .attr('cy', (d, i) => scaleRadius(d.value) * Math.sin(angleSlice * i - (Math.PI / 2)))
                 .attr('fill', viz.colors['emp'])
                 .attr('fill-opacity', .8)
-                .style('filter', 'url(#glow)')
+                .style('filter', 'url(#glow3)')
                 .on('mouseenter', function (d) {
                     d3.select(this).transition().duration(viz.TRANS_DURATION).attr('fill-opacity', 1);
                     tooltip.html(d3.format('.2f')(d.value));
@@ -162,7 +164,6 @@
             const weightAnnot = 300;
 
             const annotMargin = {
-                'left': 10,
                 'top': 32,
                 'height': 22.5
             };
@@ -203,17 +204,36 @@
                 .attr('text-anchor', 'end')
                 .attr('transform', `translate(${width / 1.42}, ${scaleRadius(1.5) * Math.sin(angleSlice * 1 - (Math.PI / 2)) + 25})`);
 
-            const annotTextGdp = ['As the radar graph on the right shows,', 'there is a strong correlation between', 'the Happiness Scores and factors, like GDP,', 'or the overall economy of a state, social support,', 'and life expectancy. However, when it comes', 'to generosity, states fall short.']
+            const annotTextGdp = ['As the radar graph on the left shows,', 'there is a strong correlation between', 'the Happiness Scores and factors, like GDP,', 'or the overall economy of a state, social support,', 'and life expectancy. However, when it comes', 'to generosity, states fall short.']
             const annotGdp = g.append('text')
                 .attr('text-anchor', 'end')
-                .attr('transform', `translate(${width / 1.44}, ${scaleRadius(1.5) * Math.sin(angleSlice * 1 - (Math.PI / 2)) + 25})`)
+                .attr('transform', `translate(${width / 1.42}, ${scaleRadius(1.5) * Math.sin(angleSlice * 1 - (Math.PI / 2)) + 25})`)
                 .selectAll('tspan').data(annotTextGdp)
                 .enter().append('tspan')
                 .text((d) => d)
                 .style('font-size', fontAnnot)
                 .style('font-weight', weightAnnot)
-                .attr('x', annotMargin.left)
+                .attr('x', 0)
                 .attr('y', (d, i) => annotMargin.top + i * annotMargin.height);
+        }();
+
+        const makeLegend = function () {
+            const fontWeight = 300;
+            const fontSize = '1.1rem';
+            const legendText = ['* Values are calculated with sample correlation', 'representing linear correlation with Happiness Scores'];
+
+            const legend = svg.append('g').attr('class', 'legendWrapper')
+                .attr('transform', `translate(${1.185 * width - margin.left}, ${height + margin.top})`)
+                .attr('text-anchor', 'end')
+                .call((g) => {
+                    g.append('text').selectAll('tspan').data(legendText)
+                        .enter().append('tspan').text((d) => d)
+                        .style('font-weight', fontWeight).style('font-size', fontSize)
+                        .attr('fill', viz.colors['text'])
+                        .attr('fill-opacity', .5)
+                        .attr('x', 0)
+                        .attr('y', (d, i) => i * 20);
+                });
         }();
     }
 }(window.viz = window.viz || {}));

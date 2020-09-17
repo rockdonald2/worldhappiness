@@ -3,9 +3,10 @@
 
     d3.queue()
         .defer(d3.json, 'static/data/merged.json')
+        .defer(d3.json, 'static/data/worldMap.json')
         .await(ready);
 
-    function ready(error, mergedData) {
+    function ready(error, mergedData, worldMap) {
         /* if any error occurs, break the code */
         if (error) {
             return console.warn(error);
@@ -13,6 +14,7 @@
 
         /* we save our data to the storage */
         viz.makeFilterAndDimension(mergedData);
+        viz.data.worldMap = worldMap;
 
         /* we initialize the visualization */
         viz.init()

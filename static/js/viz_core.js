@@ -43,5 +43,7 @@
     viz.init = function () {
         viz.initYears();
         viz.initSpider();
+        viz.initRegions();
+        viz.initMap();
     };
 }(window.viz = window.viz || {}))
