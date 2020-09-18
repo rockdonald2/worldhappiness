@@ -19,7 +19,8 @@
         /* we initialize the visualization */
         viz.init()
         setTimeout(() => {
-            /* we will clear our overlay after the timeout ends */
-        }, viz.TRANS_DURATION);
+            d3.select('body.hidden').attr('class', '');
+            d3.select('body>.overlay').attr('class', 'overlay');
+        }, 1000);
     }
 }(window.viz = window.viz || {}));

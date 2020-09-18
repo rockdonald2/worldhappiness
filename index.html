@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
+    <script>
+        window.onbeforeunload = function () {
+            window.scrollTo(0, 0);
+        }
+    </script>
+
     <head>
         <meta charset="UTF-8">
         <meta name="viewport"
@@ -17,7 +23,11 @@
             href="static/css/style.css">
     </head>
 
-    <body>
+    <body class="hidden">
+        <div class="overlay show">
+            <div class="spinner"></div>
+            <p>Currently fetching data...</p>
+        </div>
         <section class="upper">
             <header class="header">
                 <h1 class="header--title">World Happiness Report</h1>
