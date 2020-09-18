@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
 
 *,
 *::before,
@@ -16,10 +16,12 @@
 
 ::-moz-selection {
     background-color: rgba($emp-color, .5);
+    color: $bg-color;
 }
 
 ::selection {
     background-color: rgba($emp-color, .5);
+    color: $bg-color;
 }
 
 html {
@@ -36,7 +38,7 @@ html {
 
 body {
     box-sizing: border-box;
-    font-family: 'Source Sans Pro',
+    font-family: 'Noto Sans JP',
         sans-serif;
     background-color: $bg-color;
     width: 120rem;
@@ -44,7 +46,7 @@ body {
     color: $text-color;
 
     @include responsive(1000px) {
-        width: 97.5%;
+        width: 95%;
     }
 }
 

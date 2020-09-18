@@ -64,6 +64,7 @@
                         .attr('fill', 'none')
                         .attr('stroke', viz.colors['text'])
                         .attr('stroke-opacity', .25)
+                        .attr('stroke-dasharray', '.5rem')
                         .style('pointer-events', 'none')
                         .style('filter', 'url(#glow3)');
 
@@ -93,6 +94,7 @@
                         .attr('stroke', viz.colors['text'])
                         .attr('stroke-width', '1px')
                         .attr('stroke-opacity', .25)
+                        .attr('stroke-dasharray', '.5rem')
                         .style('pointer-events', 'none')
                         .style('filter', 'url(#glow3)');
 
@@ -161,21 +163,38 @@
             const fontTitle = '1.6rem';
             const fontAnnot = '1.2rem';
             const weightTitle = 400;
-            const weightAnnot = 300;
+            const weightAnnot = 400;
+
+            const coordinates = {
+                'startX': scaleRadius(0.7945385812159554) * Math.cos(angleSlice * 1 - (Math.PI / 2)),
+                'startY': scaleRadius(0.7945385812159554) * Math.sin(angleSlice * 1 - (Math.PI / 2)),
+                'midX': scaleRadius(1) * Math.cos(angleSlice * 1 - (Math.PI / 2)),
+                'midY': scaleRadius(1.5) * Math.sin(angleSlice * 1 - (Math.PI / 2)),
+                'endX': width - (margin.left + width / 3 - scaleRadius(0.7945385812159554) * Math.cos(angleSlice * 1 - (Math.PI / 2))) + 12.5
+            }
+
+            if (window.innerWidth <= 1250) {
+                coordinates['endX'] += margin.right / 2;
+            }
+
+            if (window.innerWidth <= 1000) {
+                coordinates['endX'] += margin.right / 3.85;
+            }
 
             const annotMargin = {
                 'top': 32,
                 'height': 22.5
             };
 
-            const g = chartHolder.append('g').attr('class', 'textWrapper');
+            const g = svg.append('g').attr('class', 'textWrapper')
+                .attr('transform', `translate(${margin.left + width / 3}, ${margin.top + height / 2})`);
 
             const circleGdp = g.append('circle')
                 .attr('fill', 'none')
                 .attr('stroke', viz.colors['text'])
                 .attr('stroke-width', strokeWidth)
-                .attr('r', 4).attr('cx', scaleRadius(0.7945385812159554) * Math.cos(angleSlice * 1 - (Math.PI / 2)))
-                .attr('cy', scaleRadius(0.7945385812159554) * Math.sin(angleSlice * 1 - (Math.PI / 2)))
+                .attr('r', 4).attr('cx', coordinates.startX)
+                .attr('cy', coordinates.startY)
                 .style('pointer-events', 'none');
 
             const line1ToTextGdp = g.append('line')
@@ -183,54 +202,62 @@
                 .attr('stroke-width', strokeWidth)
                 .attr('stroke-dasharray', strokeDashArray)
                 .attr('fill', 'none')
-                .attr('x1', scaleRadius(0.7945385812159554) * Math.cos(angleSlice * 1 - (Math.PI / 2)))
-                .attr('x2', scaleRadius(1) * Math.cos(angleSlice * 1 - (Math.PI / 2)))
-                .attr('y1', scaleRadius(0.7945385812159554) * Math.sin(angleSlice * 1 - (Math.PI / 2)))
-                .attr('y2', scaleRadius(1.5) * Math.sin(angleSlice * 1 - (Math.PI / 2)));
+                .attr('x1', coordinates.startX)
+                .attr('x2', coordinates.midX)
+                .attr('y1', coordinates.startY)
+                .attr('y2', coordinates.midY);
             const line2ToTextGdp = g.append('line')
                 .attr('stroke', viz.colors['text'])
                 .attr('stroke-width', strokeWidth)
                 .attr('stroke-dasharray', strokeDashArray)
                 .attr('fill', 'none')
-                .attr('x1', scaleRadius(1) * Math.cos(angleSlice * 1 - (Math.PI / 2)))
-                .attr('x2', width / 1.42)
-                .attr('y1', scaleRadius(1.5) * Math.sin(angleSlice * 1 - (Math.PI / 2)))
-                .attr('y2', scaleRadius(1.5) * Math.sin(angleSlice * 1 - (Math.PI / 2)));
+                .attr('x1', coordinates.midX)
+                .attr('x2', coordinates.endX)
+                .attr('y1', coordinates.midY)
+                .attr('y2', coordinates.midY);
 
-            const annotTitleGdp = g.append('text').text('Economy\'s influence over happiness')
+            const annotTitleGdp = g.append('text').text('Economy\'s influence over Happiness')
                 .attr('fill', viz.colors['emp'])
                 .style('font-size', fontTitle)
                 .style('font-weight', weightTitle)
                 .attr('text-anchor', 'end')
-                .attr('transform', `translate(${width / 1.42}, ${scaleRadius(1.5) * Math.sin(angleSlice * 1 - (Math.PI / 2)) + 25})`);
+                .attr('transform', `translate(${coordinates.endX}, ${coordinates.midY + 25})`)
+                .attr('fill-opacity', .85);
 
             const annotTextGdp = ['As the radar graph on the left shows,', 'there is a strong correlation between', 'the Happiness Scores and factors, like GDP,', 'or the overall economy of a state, social support,', 'and life expectancy. However, when it comes', 'to generosity, states fall short.']
             const annotGdp = g.append('text')
                 .attr('text-anchor', 'end')
-                .attr('transform', `translate(${width / 1.42}, ${scaleRadius(1.5) * Math.sin(angleSlice * 1 - (Math.PI / 2)) + 25})`)
+                .attr('transform', `translate(${coordinates.endX}, ${coordinates.midY + 25})`)
                 .selectAll('tspan').data(annotTextGdp)
                 .enter().append('tspan')
                 .text((d) => d)
                 .style('font-size', fontAnnot)
                 .style('font-weight', weightAnnot)
                 .attr('x', 0)
-                .attr('y', (d, i) => annotMargin.top + i * annotMargin.height);
+                .attr('y', (d, i) => annotMargin.top + i * annotMargin.height)
+                .attr('fill-opacity', .65);
         }();
 
         const makeLegend = function () {
             const fontWeight = 300;
             const fontSize = '1.1rem';
-            const legendText = ['* Values are calculated with sample correlation', 'representing linear correlation with Happiness Scores'];
+            const legendText = ['* Values are calculated with sample correlation,', 'representing linear correlation with Happiness Scores'];
+            const fillOpacity = .5;
+
+            const coordinates = {
+                'x': width + margin.left + margin.right,
+                'y': height + margin.top
+            }
 
             const legend = svg.append('g').attr('class', 'legendWrapper')
-                .attr('transform', `translate(${1.185 * width - margin.left}, ${height + margin.top})`)
+                .attr('transform', `translate(${coordinates.x}, ${coordinates.y})`)
                 .attr('text-anchor', 'end')
                 .call((g) => {
                     g.append('text').selectAll('tspan').data(legendText)
                         .enter().append('tspan').text((d) => d)
                         .style('font-weight', fontWeight).style('font-size', fontSize)
                         .attr('fill', viz.colors['text'])
-                        .attr('fill-opacity', .5)
+                        .attr('fill-opacity', fillOpacity)
                         .attr('x', 0)
                         .attr('y', (d, i) => i * 20);
                 });

@@ -1,3 +1,42 @@
 .lower {
     margin-bottom: 5rem;
 }
+
+.footer {
+    width: 80%;
+    margin: 0 auto;
+
+    &--title {
+        font-weight: 300;
+        margin: 1rem 0;
+        font-size: 1.4rem;
+        color: $emp-color;
+    }
+
+    &--sources {
+        color: rgba($text-color, .5);
+        margin-bottom: 1rem;
+        list-style: none;
+        display: flex;
+        align-items: center;
+
+        &__source {
+            &:not(:last-of-type) {
+                margin-right: 3rem;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+                font-size: 1.2rem;
+                font-weight: 300;
+                transition: color .25s ease-in-out;
+
+                &:hover,
+                &:focus {
+                    color: rgba($text-color, 1);
+                }
+            }
+        }
+    }
+}

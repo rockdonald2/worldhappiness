@@ -6,6 +6,13 @@
         <meta name="viewport"
             content="width=device-width, initial-scale=1.0">
         <title>World Happiness Report</title>
+        <link rel="icon"
+            href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22
+                viewBox=%220
+                0
+                100
+                100%22><text y=%22.9em%22
+                    font-size=%2290%22>💭</text></svg>">
         <link rel="stylesheet"
             href="static/css/style.css">
     </head>
@@ -61,14 +68,36 @@
                 <h2 class="graph-title--title"
                     id="regionsTitle">How Dystopia changed in different regions?</h2>
             </div>
-            <div class="regions-graph"></div>
+            <div class="regions-graph">
+                <div class="tooltip">
+                    <h3 class="tooltip--title"></h3>
+                    <p class="tooltip--text"></p>
+                </div>
+            </div>
             <div class="graph-title">
                 <h2 class="graph-title--title"
                     id="mapTitle">The map of Happiness</h2>
             </div>
-            <div class="map-graph"></div>
+            <div class="map-graph">
+                <div class="tooltip">
+                    <h3 class="tooltip--title"></h3>
+                    <p class="tooltip--text"></p>
+                </div>
+            </div>
         </main>
-        <section class="lower"></section>
+        <section class="lower">
+            <footer class="footer">
+                <h3 class="footer--title">Main sources of information</h3>
+                <ul class="footer--sources">
+                    <li class="footer--sources__source"><a href="https://www.kaggle.com/unsdsn/world-happiness"
+                            target="_blank"
+                            rel="noopener noreferrer">Kaggle</a></li>
+                    <li class="footer--sources__source"><a href="https://en.wikipedia.org/wiki/World_Happiness_Report"
+                            target="_blank"
+                            rel="noopener noreferrer">Wikipedia</a></li>
+                </ul>
+            </footer>
+        </section>
 
         <script src="https://d3js.org/d3.v4.min.js"
             defer></script>

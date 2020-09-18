@@ -24,7 +24,7 @@
     viz.densityAcc = 100;
 
     /* length of the transitions in ms */
-    viz.TRANS_DURATION = 300;
+    viz.TRANS_DURATION = 250;
 
     viz.multivalue_filter = function (values) {
         return function (v) {

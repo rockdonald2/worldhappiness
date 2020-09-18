@@ -4,13 +4,20 @@
     const chartContainer = d3.select('.density-graphs');
     const margin = {
         'top': 150,
-        'left': 100,
+        'left': 75,
         'right': 400,
         'bottom': 100
     };
+    if (window.innerWidth <= 1000) {
+        margin['top'] = 120;
+        margin['right'] = 325;
+        margin['left'] = 50;
+    }
+
     const width = parseInt(chartContainer.style('width')) - margin.left - margin.right;
     const height = parseInt(chartContainer.style('height')) - margin.top - margin.bottom;
     const overlap = 8;
+    const multiple = window.innerWidth > 1250 ? 4 : 6;
 
     const svg = chartContainer.append('svg').attr('height', height + margin.top + margin.bottom)
         .attr('width', width + margin.left + margin.right)
@@ -29,7 +36,7 @@
 
     const scaleScore = d3.scaleLinear().domain([0, 10]).range([0, width]);
     const scaleYears = d3.scalePoint().domain(viz.years).range([0, height]);
-    const scaleDensity = d3.scaleLinear().domain([0, overlap / 4]).range([0, -overlap * scaleYears.step()]);
+    const scaleDensity = d3.scaleLinear().domain([0, overlap / multiple]).range([0, -overlap * scaleYears.step()]);
 
     const area = d3.area().curve(d3.curveBasis)
         .x((d) => scaleScore(d[0]))
@@ -69,7 +76,7 @@
                     g.append('line').attr('stroke', viz.colors['text'])
                         .attr('stroke-opacity', strokeOpacity)
                         .attr('stroke-dasharray', '.5rem')
-                        .attr('y1', 25).attr('y2', - height - margin.top / 1.5)
+                        .attr('y1', 25).attr('y2', -height - margin.top / 1.5)
                         .attr('x1', scaleScore).attr('x2', scaleScore)
                         .style('pointer-events', 'none');
                     g.append('text').text((d) => d).attr('text-anchor', 'middle')
@@ -99,23 +106,38 @@
                         .style('pointer-events', 'none');
                 });
 
+            const length = {
+                'start': -100,
+                'end': -135
+            };
+
+            if (window.innerWidth <= 1250) {
+                length['start'] = -90;
+                length['end'] = -125;
+            }
+
+            if (window.innerWidth <= 1000) {
+                length['start'] = -70;
+                length['end'] = -95;
+            }
+
             const explanation = svg.append('g')
                 .attr('transform', `translate(${width + margin.left + 50}, ${height + margin.top})`)
                 .call((g) => {
                     g.append('marker').attr('id', 'marker1').attr('markerHeight', 10).attr('markerWidth', 10).attr('refX', 6).attr('refY', 3).attr('orient', 'auto')
                         .append('path').attr('d', 'M0,0L9,3L0,6Z')
                         .attr('fill', viz.colors['text'])
-                        .attr('opacity', .75)
+                        .attr('fill-opacity', .75)
                         .style('pointer-events', 'none');
                     g.append('line').attr('marker-end', 'url(#marker1)').attr('x1', -4).attr('x2', -4)
-                        .attr('y1', -90).attr('y2', -125).attr('stroke', viz.colors['text']).attr('stroke-width', strokeWidth)
-                        .attr('opacity', .75)
+                        .attr('y1', length['start']).attr('y2', length['end']).attr('stroke', viz.colors['text']).attr('stroke-width', strokeWidth)
+                        .attr('fill-opacity', .75)
                         .style('pointer-events', 'none');
                     g.append('text')
                         .text('More common')
                         .style('font-size', fontSize).attr('fill', viz.colors['text'])
                         .style('font-weight', fontWeight)
-                        .attr('opacity', .75)
+                        .attr('fill-opacity', .75)
                         .attr('transform', `rotate(-90)`)
                         .style('pointer-events', 'none');
                 });
@@ -127,32 +149,44 @@
             const fontTitle = '1.6rem';
             const fontAnnot = '1.2rem';
             const weightTitle = 400;
-            const weightAnnot = 300;
+            const weightAnnot = 400;
 
             const annotMargin = {
                 'top': 32,
                 'height': 22.5
             };
 
+            const coordinates = {
+                'startX': scaleScore(5),
+                'startY': scaleDensity(scaleDensity.domain()[0] + 0.2),
+                'midX': scaleScore(6),
+                'midY': -margin.top / 1.5,
+                'endX': width + margin.right
+            }
+
+            if (window.innerWidth <= 1000) {
+                coordinates['midY'] = -margin.top / 1.25;
+            }
+
             const g = svg.append('g').attr('class', 'textWrapper')
                 .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
             const circle = g.append('circle')
                 .attr('stroke', viz.colors['text']).attr('stroke-width', strokeWidth)
-                .attr('r', 4).attr('cx', scaleScore(5))
-                .attr('cy', scaleDensity(scaleDensity.domain()[0] + 0.2))
+                .attr('r', 4).attr('cx', coordinates.startX)
+                .attr('cy', coordinates.startY)
                 .attr('fill', 'none');
             const lineToText1 = g.append('line')
                 .attr('stroke', viz.colors['text']).attr('stroke-width', strokeWidth)
                 .attr('stroke-dasharray', strokeDashArray).attr('fill', 'none')
-                .attr('x1', scaleScore(5)).attr('x2', scaleScore(6))
-                .attr('y1', scaleDensity(scaleDensity.domain()[0] + 0.2))
-                .attr('y2', -100);
+                .attr('x1', coordinates.startX).attr('x2', coordinates.midX)
+                .attr('y1', coordinates.startY)
+                .attr('y2', coordinates.midY);
             const lineToText2 = g.append('line')
                 .attr('stroke', viz.colors['text']).attr('stroke-width', strokeWidth)
                 .attr('stroke-dasharray', strokeDashArray).attr('fill', 'none')
-                .attr('x1', scaleScore(6)).attr('x2', width + margin.right - margin.right / 8)
-                .attr('y1', -100).attr('y2', -100);
+                .attr('x1', coordinates.midX).attr('x2', coordinates.endX)
+                .attr('y1', coordinates.midY).attr('y2', coordinates.midY);
 
             const annotTitle = g.append('text')
                 .text('Changes through the years')
@@ -160,33 +194,41 @@
                 .style('font-size', fontTitle)
                 .style('font-weight', weightTitle)
                 .attr('text-anchor', 'end')
-                .attr('transform', `translate(${width + margin.right - margin.right / 8}, -75)`)
+                .attr('transform', `translate(${coordinates.endX}, -75)`)
+                .attr('fill-opacity', .85);
 
             const annotText = ['The density charts on the right visualizes for us,', 'that generally people feel more happy collectively.', 'Through the last 5 years, more countries', 'improved their Happiness Score, so there are', 'less people living in countries with lower scores.', 'The density moved from a score around 4-4.5 to over 5.5.'];
             const annot = g.append('text')
                 .attr('text-anchor', 'end')
-                .attr('transform', `translate(${width + margin.right - margin.right / 8}, -75)`)
+                .attr('transform', `translate(${coordinates.endX}, -75)`)
                 .selectAll('tspan')
                 .data(annotText).enter().append('tspan')
                 .text((d) => d)
                 .style('font-size', fontAnnot)
                 .style('font-weight', weightAnnot)
                 .attr('x', 0)
-                .attr('y', (d, i) => annotMargin.top + i * annotMargin.height);
+                .attr('y', (d, i) => annotMargin.top + i * annotMargin.height)
+                .attr('fill-opacity', .65);
         }();
 
         const makeLegend = function () {
             const fontWeight = 300;
             const fontSize = '1.1rem';
+            const fillOpacity = .5;
+
+            const coordinates = {
+                'x': margin.left + width + margin.right,
+                'y': margin.top + height
+            }
 
             const legend = svg.append('g').attr('class', 'legendWrapper')
-                .attr('transform', `translate(${margin.left + width + margin.right - margin.right / 8}, ${margin.top + height})`)
+                .attr('transform', `translate(${coordinates.x}, ${coordinates.y})`)
                 .attr('text-anchor', 'end')
                 .call((g) => {
                     g.append('text').text('* Inner values represent median Happiness Scores')
                         .style('font-weight', fontWeight).style('font-size', fontSize)
                         .attr('fill', viz.colors['text'])
-                        .attr('fill-opacity', .5);
+                        .attr('fill-opacity', fillOpacity);
                 });
         }();
 

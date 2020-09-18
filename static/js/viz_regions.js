@@ -8,6 +8,10 @@
         'right': 500,
         'bottom': 50
     };
+    if (window.innerWidth <= 1250) {
+        margin['right'] = 350;
+    }
+
     const width = parseInt(chartContainer.style('width')) - margin.left - margin.right;
     const height = parseInt(chartContainer.style('height')) - margin.top - margin.bottom;
 
@@ -26,6 +30,8 @@
         feMerge = filter.append('feMerge'),
         feMergeNode_1 = feMerge.append('feMergeNode').attr('in', 'coloredBlur'),
         feMergeNode_2 = feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+    const tooltip = chartContainer.select('.tooltip');
 
     viz.initRegions = function () {
         const data2015 = viz.data.data.filter(2015).top(Infinity);
@@ -59,7 +65,8 @@
                     g.append('line').attr('stroke', viz.colors['text']).attr('stroke-opacity', .25)
                         .attr('stroke-dasharray', '.5rem')
                         .attr('x1', scaleScores).attr('x2', scaleScores)
-                        .attr('y1', 0).attr('y2', height);
+                        .attr('y1', 0).attr('y2', height)
+                        .style('pointer-events', 'none');
 
                     g.append('text').text((d) => d)
                         .attr('text-anchor', 'middle')
@@ -67,7 +74,8 @@
                         .attr('opacity', .75)
                         .attr('x', scaleScores).attr('y', -20)
                         .style('font-weight', 400)
-                        .style('font-size', '1.4rem');
+                        .style('font-size', '1.4rem')
+                        .style('pointer-events', 'none');
                 });
         }();
 
@@ -151,6 +159,41 @@
                 .attr('fill', viz.colors['emp'])
                 .style('filter', 'url(#glow2)');
 
+            const rectInvisible = chartHolder.selectAll('.rectInvisible').data(data)
+                .enter().append('rect').attr('class', 'rectInvisible')
+                .attr('width', (d) => {
+                    if (d['value1'] > d['value2']) {
+                        return scaleScores(d['value1']) - scaleScores(d['value2']) + 15;
+                    } else {
+                        return scaleScores(d['value2']) - scaleScores(d['value1']) + 15;
+                    }
+                })
+                .attr('height', 15)
+                .attr('x', (d) => {
+                    if (d['value1'] > d['value2']) {
+                        return scaleScores(d['value2']) - 7.5;
+                    } else {
+                        return scaleScores(d['value1']) - 7.5;
+                    }
+                })
+                .attr('y', (d) => scaleRegions(d['region']) - 7.5)
+                .attr('fill', 'transparent')
+                .on('mouseenter', function (d) {
+                    tooltip.select('.tooltip--title').html(`${d['ph'][0].toUpperCase() + d['ph'].slice(1)}. value change`);
+                    tooltip.select('.tooltip--text').html(`${d['value1'].toFixed(2)} <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="16" height="16" style="margin: 0 .5rem">
+  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+</svg> ${d['value2'].toFixed(2)}`);
+                    chartHolder.select(`.label-${d['region'].split(' ')[0]}`).attr('fill', viz.colors['emp']);
+                })
+                .on('mousemove', function (d) {
+                    tooltip.style('left', (d3.event.pageX - parseInt(tooltip.style('width')) / 2) + 'px');
+                    tooltip.style('top', (d3.event.pageY + parseInt(tooltip.style('height')) / 2) + 'px');
+                })
+                .on('mouseleave', function (d) {
+                    tooltip.style('left', '-9999px');
+                    chartHolder.select(`.label-${d['region'].split(' ')[0]}`).attr('fill', viz.colors['text']);
+                });
+
             const maxScores = [];
             for (const r of viz.regions) {
                 const d = data.filter((d) => d['region'] == r);
@@ -161,14 +204,15 @@
             }
 
             const labels = chartHolder.selectAll('.label').data(maxScores)
-                .enter().append('text').attr('class', 'label').text((d) => d['region'])
+                .enter().append('text').attr('class', (d) => `label label-${d['region'].split(' ')[0]}`).text((d) => d['region'])
                 .attr('x', (d) => scaleScores(d['value']) + 20)
                 .attr('y', (d) => scaleRegions(d['region']))
                 .attr('fill', viz.colors['text'])
                 .attr('fill-opacity', .75)
                 .attr('dy', '.32em')
                 .style('font-size', '1.2rem')
-                .style('font-weight', 300);
+                .style('font-weight', 300)
+                .style('pointer-events', 'none');
         }();
 
         const makeTexts = function () {
@@ -177,12 +221,20 @@
             const fontTitle = '1.6rem';
             const fontAnnot = '1.2rem';
             const weightTitle = 400;
-            const weightAnnot = 300;
+            const weightAnnot = 400;
 
             const annotMargin = {
                 'top': 32,
                 'height': 22.5
             };
+
+            const coordinates = {
+                'startX': scaleScores(4.518),
+                'startY': scaleRegions('Latin America and Caribbean'),
+                'midX': scaleScores(5),
+                'midY': scaleRegions('Latin America and Caribbean') - 25,
+                'endX': width + margin.right
+            }
 
             const g = svg.append('g').attr('class', 'textWrapper')
                 .attr('transform', `translate(${margin.left}, ${margin.top})`);
@@ -190,26 +242,26 @@
             const circle = g.append('circle')
                 .attr('stroke', viz.colors['text'])
                 .attr('stroke-width', strokeWidth)
-                .attr('r', 4).attr('cx', scaleScores(4.518)).attr('cy', scaleRegions('Latin America and Caribbean'))
+                .attr('r', 4).attr('cx', coordinates.startX).attr('cy', coordinates.startY)
                 .attr('fill', 'none');
             const lineToText1 = g.append('line')
                 .attr('stroke', viz.colors['text'])
                 .attr('stroke-width', strokeWidth)
                 .attr('stroke-dasharray', strokeDashArray)
                 .attr('fill', 'none')
-                .attr('x1', scaleScores(4.518))
-                .attr('x2', scaleScores(5))
-                .attr('y1', scaleRegions('Latin America and Caribbean'))
-                .attr('y2', scaleRegions('Latin America and Caribbean') - 25);
+                .attr('x1', coordinates.startX)
+                .attr('x2', coordinates.midX)
+                .attr('y1', coordinates.startY)
+                .attr('y2', coordinates.midY);
             const lineToText2 = g.append('line')
                 .attr('stroke', viz.colors['text'])
                 .attr('stroke-width', strokeWidth)
                 .attr('stroke-dasharray', strokeDashArray)
                 .attr('fill', 'none')
-                .attr('x1', scaleScores(5))
-                .attr('x2', width + margin.right * 0.96)
-                .attr('y1', scaleRegions('Latin America and Caribbean') - 25)
-                .attr('y2', scaleRegions('Latin America and Caribbean') - 25);
+                .attr('x1', coordinates.midX)
+                .attr('x2', coordinates.endX)
+                .attr('y1', coordinates.midY)
+                .attr('y2', coordinates.midY);
 
             const annotTitle = g.append('text')
                 .text('Huge decline in Latin America')
@@ -217,30 +269,48 @@
                 .style('font-size', fontTitle)
                 .style('font-weight', weightTitle)
                 .attr('text-anchor', 'end')
-                .attr('transform', `translate(${width + margin.right * 0.96}, ${scaleRegions('Latin America and Caribbean')})`);
+                .attr('transform', `translate(${coordinates.endX}, ${scaleRegions('Latin America and Caribbean')})`)
+                .attr('fill-opacity', .85);
 
             const annotText = ['Among all the regions, the Caribbean', 'region showed the largest decline through', 'recent years. Latin American people tend', 'to get more unhappy each year.', 'On the other hand, regions like Oceania', 'almost showed no change.', 'The same can be said about the North American region too.'];
             const annot = g.append('text')
                 .attr('text-anchor', 'end')
-                .attr('transform', `translate(${width + margin.right * 0.96}, ${scaleRegions('Latin America and Caribbean')})`)
+                .attr('transform', `translate(${coordinates.endX}, ${scaleRegions('Latin America and Caribbean')})`)
                 .selectAll('tspan')
                 .data(annotText).enter().append('tspan')
                 .text((d) => d)
                 .style('font-size', fontAnnot)
                 .style('font-weight', weightAnnot)
                 .attr('x', 0)
-                .attr('y', (d, i) => annotMargin.top + i * annotMargin.height);
+                .attr('y', (d, i) => annotMargin.top + i * annotMargin.height)
+                .attr('fill-opacity', .65);
         }();
 
         const makeLegend = function () {
+            const coordinates = {
+                'x': margin.left + width + margin.right / 1.7,
+                'y': margin.top
+            }
+
+            if (window.innerWidth <= 1250) {
+                coordinates['x'] = margin.left + width + margin.right / 2;
+            }
+
+            if (window.innerWidth <= 1000) {
+                coordinates['x'] = margin.left + width + margin.right / 1.75;
+            }
+
+            const fontSize = '1.2rem';
+            const fillOpacity = .85;
+
             const legend = svg.append('g').attr('class', 'legendWrapper')
-                .attr('transform', `translate(${margin.left + width + margin.right * 0.59}, ${margin.top})`);
+                .attr('transform', `translate(${coordinates.x}, ${coordinates.y})`);
 
             legend.append('circle').attr('cx', 0).attr('cy', 25)
                 .attr('r', 5).attr('fill', viz.colors['emp']);
             legend.append('text').text('Min. happiness score (2015-2019)')
-                .attr('font-size', '1.2rem').attr('fill', viz.colors['text'])
-                .attr('fill-opacity', .85)
+                .attr('font-size', fontSize).attr('fill', viz.colors['text'])
+                .attr('fill-opacity', fillOpacity)
                 .attr('x', 20)
                 .attr('y', 25)
                 .attr('dy', '.3em');
@@ -250,8 +320,8 @@
             legend.append('circle').attr('cx', 0).attr('cy', 50)
                 .attr('r', 2).attr('fill', viz.colors['emp']);
             legend.append('text').text('Avg. happiness score (2015-2019)')
-                .attr('font-size', '1.2rem').attr('fill', viz.colors['text'])
-                .attr('fill-opacity', .85)
+                .attr('font-size', fontSize).attr('fill', viz.colors['text'])
+                .attr('fill-opacity', fillOpacity)
                 .attr('x', 20)
                 .attr('y', 50)
                 .attr('dy', '.3em');
@@ -261,8 +331,8 @@
                 .attr('y1', 75).attr('y2', 75)
                 .attr('marker-end', 'url(#marker2)');
             legend.append('text').text('Direction of change')
-                .attr('font-size', '1.2rem').attr('fill', viz.colors['text'])
-                .attr('fill-opacity', .85)
+                .attr('font-size', fontSize).attr('fill', viz.colors['text'])
+                .attr('fill-opacity', fillOpacity)
                 .attr('x', 20)
                 .attr('y', 75)
                 .attr('dy', '.3em');
