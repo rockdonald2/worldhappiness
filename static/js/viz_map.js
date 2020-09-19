@@ -185,7 +185,7 @@
             const centroid = path.centroid(haiti['Geo']);
 
             const coordinates = {
-                'startX': centroid[0],
+                'startX': centroid[0] + margin.left,
                 'startY': centroid[1],
                 'midX': centroid[0] - 60,
                 'midY': centroid[1] + 40,
