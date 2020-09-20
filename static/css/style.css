@@ -35,7 +35,7 @@ body {
   width: 120rem;
   margin: 0 auto;
   color: #121212;
-  position: relative; }
+  /* position: relative; */ }
   @media only screen and (max-width: 1000px) {
     body {
       width: 95%; } }

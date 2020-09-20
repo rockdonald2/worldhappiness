@@ -48,7 +48,7 @@ body {
     @include responsive(1000px) {
         width: 95%;
     }
-    position: relative;
+    /* position: relative; */
 }
 
 body.hidden {
