@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,700;1,400&display=swap');
 
 *,
 *::before,
@@ -38,7 +38,7 @@ html {
 
 body {
     box-sizing: border-box;
-    font-family: 'Noto Sans JP',
+    font-family: 'Karla',
         sans-serif;
     background-color: $bg-color;
     width: 120rem;
@@ -48,7 +48,6 @@ body {
     @include responsive(1000px) {
         width: 95%;
     }
-    /* position: relative; */
 }
 
 body.hidden {

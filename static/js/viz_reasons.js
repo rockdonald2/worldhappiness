@@ -205,7 +205,8 @@
                 .attr('x1', coordinates.startX)
                 .attr('x2', coordinates.midX)
                 .attr('y1', coordinates.startY)
-                .attr('y2', coordinates.midY);
+                .attr('y2', coordinates.midY)
+                .style('pointer-events', 'none');
             const line2ToTextGdp = g.append('line')
                 .attr('stroke', viz.colors['text'])
                 .attr('stroke-width', strokeWidth)
@@ -239,7 +240,7 @@
         }();
 
         const makeLegend = function () {
-            const fontWeight = 300;
+            const fontWeight = 400;
             const fontSize = '1.1rem';
             const legendText = ['* Values are calculated with sample correlation,', 'representing linear correlation with Happiness Scores'];
             const fillOpacity = .5;

@@ -212,7 +212,7 @@
         }();
 
         const makeLegend = function () {
-            const fontWeight = 300;
+            const fontWeight = 400;
             const fontSize = '1.1rem';
             const fillOpacity = .5;
 
@@ -254,7 +254,7 @@
                 .attr('d', (d) => line(d.density))
                 .style('filter', 'url(#glow1)');
             chart.append('text').text((d) => d3.format('.2f')(d['median']))
-                .style('font-weight', 300).style('font-size', '3.2rem')
+                .style('font-weight', 400).style('font-size', '3.2rem')
                 .attr('text-anchor', 'middle')
                 .attr('x', scaleScore(5.25))
                 .attr('y', scaleDensity(scaleDensity.domain()[0] + 0.1))

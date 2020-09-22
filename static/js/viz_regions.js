@@ -211,7 +211,7 @@
                 .attr('fill-opacity', .75)
                 .attr('dy', '.32em')
                 .style('font-size', '1.2rem')
-                .style('font-weight', 300)
+                .style('font-weight', 400)
                 .style('pointer-events', 'none');
         }();
 
